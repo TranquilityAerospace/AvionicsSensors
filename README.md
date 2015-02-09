@@ -11,7 +11,7 @@ Currently the repo contain a mix of sensor libraries and useful code, which will
 ##GPS
 
  * **uBx** main code folder for GPS chipsets, for now it only emulates u-Centre comms capacity. It supersedes TinyGPS-13 code, which was intended for different chip.
- * **Serial** introductory code for dual communication. Intended as starting point for GPS corrections
+ * **Serial** introductory code for dual communication. Intended as starting point for GPS corrections support or nav payload relay.
 
 ### Getting started
 If you are programming the sensors for the first time, the best place to start is to check the sensor you have on hand and go to the reference library that is relevant to that sensor. Then [install the library](http://arduino.cc/en/Guide/Libraries) and start modifying the examples. Then save the example sketch you have in a different name and commit it! 
