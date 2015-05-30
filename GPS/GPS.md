@@ -30,7 +30,7 @@ If you set up them as  0,1 it is talking to CPU not the board
 ##Connecting uBx 6
 ###to Arudino Mega board
 
-| uBx | Arduino Mega |
+| uBx | Mega |
 | :---| -------:|
 | VCC | 5V|
 | RX | Tx1 18|
@@ -39,6 +39,16 @@ If you set up them as  0,1 it is talking to CPU not the board
 
 :GY-GPS6MV2
 
+
+| uBx | Mega |
+| :---| -------:|
+| - | GND|
+| 5V | 5V|
+| RX | Tx1 18|
+| Tx | Rx1 19|
+
+:Droteq NEO-M8N-0-01
+
 There will be no light on uBx unit but it should spin out data on COM. Use my library, it wont work with TinyGPS one.
 
 ###to Arudino Nano board
@@ -46,7 +56,7 @@ There will be no light on uBx unit but it should spin out data on COM. Use my li
 * Tools->Board->Arudino Nano w/o ATmego328 for Arudino 1.6
 * Tools->Board->Arudino Nano for Arudino 1.6.3
 
-| uBx | Arduino Nano |
+| uBx | Nano |
 | :---| -------:|
 | - | GND|
 | 5V | 5V|
@@ -57,7 +67,7 @@ There will be no light on uBx unit but it should spin out data on COM. Use my li
 
 Below are settings for additional GPS unit. Note that relevant code **uBx_2receivers** is not fully working yet.
 
-| uBx | Arduino Nano |
+| uBx | Nano |
 | :---| -------:|
 | VCC | 5V|
 | RX | 9|
@@ -67,17 +77,45 @@ Below are settings for additional GPS unit. Note that relevant code **uBx_2recei
 :to GY-GPS6MV2
 
 ###How do I know it works
-
-On serial monitor you should look response similar to this one (takes 10s?) :
-
-```batch
-Configuring u-Blox GPS initial state...
-Setting Navigation Mode... ACK Timeout
-Setting Navigation Mode... Success!
-ACK Received! B5 62 05 01 02 00 06 24 32 5B
+* GPS should be flashing quickly
+* On serial monitor you should look response similar to this one (takes 10s?) :
+	```batch
+	Configuring u-Blox GPS initial state...
+	Setting Navigation Mode... ACK Timeout
+	Setting Navigation Mode... Success!
+	ACK Received! B5 62 05 01 02 00 06 24 32 5B
 ```
 ###WIP
 
 * Develop sequential reading from two GPS units
-* Allow recording to SD card
+* <s>Allow recording to SD card</s>
 * combine with IMU
+
+
+#SD card
+
+| SD | Mega |
+| :---| -------:|
+| CS | 53|
+| SCK | 52|
+| MOSI | 51|
+| MISO | 50|
+| VCC | 5V|
+| GND | GND|
+
+:to SD card
+
+
+* load code
+* Serial Monitor
+		* set to 9600 
+		* you should see:
+		```batch
+		Initializing SD card...initialization done.
+		example.txt doesn't exist.
+		Creating example.txt...
+		example.txt exists.
+		Removing example.txt...
+		example.txt doesn't exist.
+		```
+

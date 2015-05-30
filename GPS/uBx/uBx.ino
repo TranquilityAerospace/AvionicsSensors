@@ -2,7 +2,6 @@
 code copied from http://playground.arduino.cc/UBlox/GPS
 init LKB/PP at Citizen Inventor, 31/01/15
 rev LKB 25/04/15
-
 This code run both on Nano and Mega boards
 */
 
@@ -12,9 +11,9 @@ unsigned long start;
 
 #include <SoftwareSerial.h>
 //SoftwareSerial gpsSerial(10, 11); // RX, TX for Nano board
-SoftwareSerial gpsSerial(8,9); // RX, TX for Nano board
+//SoftwareSerial gpsSerial(8,9); // RX, TX for Nano board
 
-//HardwareSerial gpsSerial(Serial1); //this is for Mega board
+HardwareSerial gpsSerial(Serial1); //this is for Mega board
 
 
 void setup()
