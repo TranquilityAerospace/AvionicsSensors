@@ -14,7 +14,8 @@ This is development code for GPS chipset. Check GPS.md for more details.
 
 * **uBx** main code folder for GPS chipsets, for now it only emulates u-Centre comms capacity. It supersedes TinyGPS-13 code, which was intended for different chip.
 * **uBx_2receivers** not working yet. Connect two GPS receivers to single Arduino Uno. Probably messed stg up with SoftwareSerial pointer.
-* **Serial** introductory code for dual communication. Intended as starting point for GPS corrections support or nav payload relay. I added some photos for reference as well.
+* **Serial** us a simple code for dual communication. Intended as starting point for GPS corrections support or nav payload relay. I added some photos for the reference as well.
+* **SD** is basic code for writing/reading from SD card via attached adapter. Code ammended by Pekka.
 
 ##IMU
 This is development code for GPS chipset. Faraz did most work on last meeting. I just put it all together. To run this code **I2Cdev** and **MPU6050** must be installed as libraries. Take it from <http://www.i2cdevlib.com/usage> or even better from [github](https://github.com/jrowberg/i2cdevlib/). Last used version is at **/IMU/lib/**. I removed superseded code from */reference lib*. Check IMU.md for more details.

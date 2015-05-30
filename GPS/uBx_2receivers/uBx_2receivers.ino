@@ -62,7 +62,7 @@ void setup() //run before loop and only done once
 
   Serial.println("HELLO I AM doing first receiver");
   delay(200);
-  configureUblox(settingsArray,gpsSerial1);
+  configureUblox(settingsArray,&gpsSerial1);
   Serial.println("HELLO I AM doing other receiver now yaaaa");
   //configureUblox(settingsArray,gpsSerial2);
 }
@@ -74,13 +74,14 @@ void loop()
 	Serial.write(gpsSerial1.read());
 	Serial.print("HELLO I AM OUT OF LOOP 1");
 	Serial.write(gpsSerial2.read());
+
     // //GPS unit1
     // if(gpsSerial1.available())
     // {
     // // THIS IS THE MAIN LOOP JUST READS IN FROM THE GPS SERIAL AND ECHOS OUT TO THE ARDUINO SERIAL.
     // Serial.write(gpsSerial1.read());
     // }
-    // 
+    //
     // //GPS unit2
     // if(gpsSerial2.available())
     // {
@@ -89,25 +90,10 @@ void loop()
     // }
 
 
-
-    // //GPS unit1
-    // if(gpsSerial1.available())
-    // {
-    // // THIS IS THE MAIN LOOP JUST READS IN FROM THE GPS SERIAL AND ECHOS OUT TO THE ARDUINO SERIAL.
-    // Serial.write(gpsSerial1.read());
-    // }
-    // Serial.print("HELLO I AM OUT OF LOOP 1");
-    // //GPS unit2
-    // if(gpsSerial2.available())
-    // {
-    // // THIS IS THE MAIN LOOP JUST READS IN FROM THE GPS SERIAL AND ECHOS OUT TO THE ARDUINO SERIAL.
-    // Serial.write(gpsSerial1.read());
-    // }
-
-}  
+}
 
 
-void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
+void configureUblox(byte *settingsArrayPointer, SoftwareSerial *GPS_SerialPort) {
   byte gpsSetSuccess = 0;
   Serial.println("Configuring u-Blox GPS initial state...");
 
@@ -134,16 +120,16 @@ void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
   while(gpsSetSuccess < 3)
   {
     Serial.print("Setting Navigation Mode... ");
-    sendUBX(&setNav[0], sizeof(setNav),GPS_SerialPort);  //Send UBX Packet
-    gpsSetSuccess += getUBX_ACK(&setNav[2],GPS_SerialPort); //Passes Class ID and Message ID to the ACK Receive function
+    sendUBX(&setNav[0], sizeof(setNav),&GPS_SerialPort);  //Send UBX Packet
+    gpsSetSuccess += getUBX_ACK(&setNav[2],&GPS_SerialPort); //Passes Class ID and Message ID to the ACK Receive function
     if (gpsSetSuccess == 5) {
       gpsSetSuccess -= 4;
-      setBaud(settingsArrayPointer[4],GPS_SerialPort);
+      setBaud(settingsArrayPointer[4],&GPS_SerialPort);
       delay(1500);
       byte lowerPortRate[] = {0xB5, 0x62, 0x06, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00, 0xD0, 0x08, 0x00, 0x00, 0x80, 0x25, 0x00, 0x00, 0x07, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA2, 0xB5};
-      sendUBX(lowerPortRate, sizeof(lowerPortRate),GPS_SerialPort);
+      sendUBX(lowerPortRate, sizeof(lowerPortRate),&GPS_SerialPort);
       GPS_SerialPort.begin(9600);
-      delay(2000);      
+      delay(2000);
     }
     if(gpsSetSuccess == 6) gpsSetSuccess -= 4;
     if (gpsSetSuccess == 10) gpsStatus[0] = true;
@@ -152,8 +138,8 @@ void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
   gpsSetSuccess = 0;
   while(gpsSetSuccess < 3) {
     Serial.print("Setting Data Update Rate... ");
-    sendUBX(&setDataRate[0], sizeof(setDataRate),GPS_SerialPort);  //Send UBX Packet
-    gpsSetSuccess += getUBX_ACK(&setDataRate[2],GPS_SerialPort); //Passes Class ID and Message ID to the ACK Receive function      
+    sendUBX(&setDataRate[0], sizeof(setDataRate),&GPS_SerialPort);  //Send UBX Packet
+    gpsSetSuccess += getUBX_ACK(&setDataRate[2],GPS_SerialPort); //Passes Class ID and Message ID to the ACK Receive function
     if (gpsSetSuccess == 10) gpsStatus[1] = true;
     if (gpsSetSuccess == 5 | gpsSetSuccess == 6) gpsSetSuccess -= 4;
   }
@@ -178,7 +164,7 @@ void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
     if (gpsSetSuccess == 10) gpsStatus[3] = true;
     if (gpsSetSuccess == 5 | gpsSetSuccess == 6) gpsSetSuccess -= 4;
   }
-  if (gpsSetSuccess == 3) Serial.println("NMEA GSA Message Deactivation Failed!");  
+  if (gpsSetSuccess == 3) Serial.println("NMEA GSA Message Deactivation Failed!");
   gpsSetSuccess = 0;
 
   while(gpsSetSuccess < 3 && settingsArrayPointer[8] == 0x00) {
@@ -188,7 +174,7 @@ void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
     if (gpsSetSuccess == 10) gpsStatus[4] = true;
     if (gpsSetSuccess == 5 | gpsSetSuccess == 6) gpsSetSuccess -= 4;
   }
-  if (gpsSetSuccess == 3) Serial.println("NMEA GSV Message Deactivation Failed!");  
+  if (gpsSetSuccess == 3) Serial.println("NMEA GSV Message Deactivation Failed!");
   gpsSetSuccess = 0;
 
   while(gpsSetSuccess < 3 && settingsArrayPointer[9] == 0x00) {
@@ -198,7 +184,7 @@ void configureUblox(byte *settingsArrayPointer, SoftwareSerial GPS_SerialPort) {
     if (gpsSetSuccess == 10) gpsStatus[5] = true;
     if (gpsSetSuccess == 5 | gpsSetSuccess == 6) gpsSetSuccess -= 4;
   }
-  if (gpsSetSuccess == 3) Serial.println("NMEA RMC Message Deactivation Failed!");  
+  if (gpsSetSuccess == 3) Serial.println("NMEA RMC Message Deactivation Failed!");
   gpsSetSuccess = 0;
 
   while(gpsSetSuccess < 3 && settingsArrayPointer[10] == 0x00) {
@@ -233,7 +219,7 @@ void calcChecksum(byte *checksumPayload, byte payloadSize) {
   *checksumPayload = CK_B;
 }
 
-void sendUBX(byte *UBXmsg, byte msgLength, SoftwareSerial GPS_SerialPort) {
+void sendUBX(byte *UBXmsg, byte msgLength, SoftwareSerial *GPS_SerialPort) {
   for(int i = 0; i < msgLength; i++) {
     GPS_SerialPort.write(UBXmsg[i]);
     GPS_SerialPort.flush();
@@ -243,7 +229,7 @@ void sendUBX(byte *UBXmsg, byte msgLength, SoftwareSerial GPS_SerialPort) {
 }
 
 
-byte getUBX_ACK(byte *msgID, SoftwareSerial GPS_SerialPort) {
+byte getUBX_ACK(byte *msgID, SoftwareSerial *GPS_SerialPort) {
   byte CK_A = 0, CK_B = 0;
   byte incoming_char;
   boolean headerReceived = false;
@@ -320,7 +306,7 @@ void printHex(uint8_t *data, uint8_t length) // prints 8-bit data in hex
   Serial.println();
 }
 
-void setBaud(byte baudSetting, SoftwareSerial GPS_SerialPort) {
+void setBaud(byte baudSetting, SoftwareSerial *GPS_SerialPort) {
   if (baudSetting == 0x12) GPS_SerialPort.begin(4800);
   if (baudSetting == 0x4B) GPS_SerialPort.begin(19200);
   if (baudSetting == 0x96) GPS_SerialPort.begin(38400);
